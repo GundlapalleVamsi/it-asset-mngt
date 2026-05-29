@@ -1,0 +1,81 @@
+{
+  "xsappname": "it-asset-mngt",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.Asset.Manage",
+      "description": "Asset.Manage"
+    },
+    {
+      "name": "$XSAPPNAME.Admin.All",
+      "description": "Admin.All"
+    },
+    {
+      "name": "$XSAPPNAME.Asset.Read",
+      "description": "Asset.Read"
+    },
+    {
+      "name": "$XSAPPNAME.Ticket.Read",
+      "description": "Ticket.Read"
+    },
+    {
+      "name": "$XSAPPNAME.Ticket.Write",
+      "description": "Ticket.Write"
+    },
+    {
+      "name": "$XSAPPNAME.Ticket.Manage",
+      "description": "Ticket.Manage"
+    }
+  ],
+  "attributes": [],
+  "role-templates": [
+    {
+      "name": "Asset.Manage",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.Asset.Manage"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "Admin.All",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.Admin.All"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "Asset.Read",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.Asset.Read"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "Ticket.Read",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.Ticket.Read"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "Ticket.Write",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.Ticket.Write"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "Ticket.Manage",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.Ticket.Manage"
+      ],
+      "attribute-references": []
+    }
+  ]
+}

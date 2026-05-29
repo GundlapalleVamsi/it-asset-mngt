@@ -1,0 +1,218 @@
+{
+  "_version": "1.84.0",
+  "sap.app": {
+    "id": "itagentdashboard",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.24.0",
+      "toolsId": "4024b1b2-45bd-4e6c-90ce-a0923d4b5cf8"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/my-service2/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.01"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "it-agent-dashboard-display": {
+          "semanticObject": "it-agent-dashboard",
+          "action": "display",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.148.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {},
+        "sap.f": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "itagentdashboard.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {
+        "flexibleColumnLayout": {
+          "defaultTwoColumnLayoutType": "TwoColumnsMidExpanded",
+          "defaultThreeColumnLayoutType": "ThreeColumnsEndExpanded"
+        },
+        "routerClass": "sap.f.routing.Router"
+      },
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "ServiceRequestsList",
+          "target": [
+            "ServiceRequestsList"
+          ]
+        },
+        {
+          "pattern": "ServiceRequests({key}):?query:",
+          "name": "ServiceRequestsObjectPage",
+          "target": [
+            "ServiceRequestsList",
+            "ServiceRequestsObjectPage"
+          ]
+        },
+        {
+          "pattern": "ServiceRequests({key})/Comments({key2}):?query:",
+          "name": "CommentsObjectPage",
+          "target": [
+            "ServiceRequestsList",
+            "ServiceRequestsObjectPage",
+            "CommentsObjectPage"
+          ]
+        }
+      ],
+      "targets": {
+        "ServiceRequestsList": {
+          "type": "Component",
+          "id": "ServiceRequestsList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/ServiceRequests",
+              "variantManagement": "Page",
+              "navigation": {
+                "ServiceRequests": {
+                  "detail": {
+                    "route": "ServiceRequestsObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  }
+                }
+              }
+            }
+          },
+          "controlAggregation": "beginColumnPages",
+          "contextPattern": ""
+        },
+        "ServiceRequestsObjectPage": {
+          "type": "Component",
+          "id": "ServiceRequestsObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/ServiceRequests",
+              "navigation": {
+                "Comments": {
+                  "detail": {
+                    "route": "CommentsObjectPage"
+                  }
+                }
+              }
+            }
+          },
+          "controlAggregation": "midColumnPages",
+          "contextPattern": "/ServiceRequests({key})"
+        },
+        "CommentsObjectPage": {
+          "type": "Component",
+          "id": "CommentsObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/ServiceRequests/Comments"
+            }
+          },
+          "controlAggregation": "endColumnPages",
+          "contextPattern": "/ServiceRequests({key})/Comments({key2})"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "sap.fe.templates.RootContainer.view.Fcl",
+      "type": "XML",
+      "async": true,
+      "id": "appRootView"
+    },
+    "extends": {
+      "extensions": {
+        "sap.ui.controllerExtensions": {}
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  },
+  "sap.fe": {
+    "app": {
+      "enableLazyLoading": true
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "itassetmngt.service"
+  }
+}

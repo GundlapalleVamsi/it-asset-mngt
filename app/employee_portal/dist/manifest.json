@@ -1,0 +1,198 @@
+{
+	"_version": "1.84.0",
+	"sap.app": {
+		"id": "employeeportal",
+		"type": "application",
+		"i18n": {
+			"bundleUrl": "i18n/i18n.properties",
+			"supportedLocales": [
+				""
+			]
+		},
+		"applicationVersion": {
+			"version": "0.0.1"
+		},
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"resources": "resources.json",
+		"sourceTemplate": {
+			"id": "@sap/generator-fiori:lrop",
+			"version": "1.24.0",
+			"toolsId": "853582e8-b3f8-45d5-8651-5d917851ba5a"
+		},
+		"dataSources": {
+			"mainService": {
+				"uri": "/odata/v4/my-service1/",
+				"type": "OData",
+				"settings": {
+					"annotations": [],
+					"odataVersion": "4.01"
+				}
+			}
+		},
+		"crossNavigation": {
+			"inbounds": {
+				"it-agent-dashboard-display": {
+					"semanticObject": "it-agent-dashboard",
+					"action": "display",
+					"signature": {
+						"parameters": {},
+						"additionalParameters": "allowed"
+					}
+				}
+			}
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+	"sap.ui5": {
+		"flexEnabled": true,
+		"dependencies": {
+			"minUI5Version": "1.148.0",
+			"libs": {
+				"sap.m": {},
+				"sap.ui.core": {},
+				"sap.fe.templates": {},
+				"sap.f": {}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "employeeportal.i18n.i18n",
+					"supportedLocales": [
+						""
+					]
+				}
+			},
+			"": {
+				"dataSource": "mainService",
+				"preload": true,
+				"settings": {
+					"operationMode": "Server",
+					"autoExpandSelect": true,
+					"earlyRequests": true
+				}
+			},
+			"@i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"uri": "i18n/i18n.properties",
+				"settings": {
+					"supportedLocales": [
+						""
+					]
+				}
+			}
+		},
+		"resources": {
+			"css": []
+		},
+		"routing": {
+			"config": {
+				"flexibleColumnLayout": {
+					"defaultTwoColumnLayoutType": "TwoColumnsBeginExpanded",
+					"defaultThreeColumnLayoutType": "ThreeColumnsMidExpanded"
+				},
+				"routerClass": "sap.f.routing.Router"
+			},
+			"routes": [
+				{
+					"pattern": ":?query:",
+					"name": "EmployeePortalList",
+					"target": [
+						"EmployeePortalList"
+					]
+				},
+				{
+					"pattern": "EmployeePortal({key}):?query:",
+					"name": "EmployeePortalObjectPage",
+					"target": [
+						"EmployeePortalList",
+						"EmployeePortalObjectPage"
+					]
+				}
+			],
+			"targets": {
+				"EmployeePortalList": {
+					"type": "Component",
+					"id": "EmployeePortalList",
+					"name": "sap.fe.templates.ListReport",
+					"options": {
+						"settings": {
+							"contextPath": "/EmployeePortal",
+							"variantManagement": "Page",
+							"navigation": {
+								"EmployeePortal": {
+									"detail": {
+										"route": "EmployeePortalObjectPage"
+									}
+								}
+							},
+							"controlConfiguration": {
+								"@com.sap.vocabularies.UI.v1.LineItem": {
+									"tableSettings": {
+										"type": "ResponsiveTable"
+									}
+								}
+							}
+						}
+					},
+					"controlAggregation": "beginColumnPages",
+					"contextPattern": ""
+				},
+				"EmployeePortalObjectPage": {
+					"type": "Component",
+					"id": "EmployeePortalObjectPage",
+					"name": "sap.fe.templates.ObjectPage",
+					"options": {
+						"settings": {
+							"editableHeaderContent": false,
+							"contextPath": "/EmployeePortal"
+						}
+					},
+					"controlAggregation": "midColumnPages",
+					"contextPattern": "/EmployeePortal({key})"
+				}
+			}
+		},
+		"rootView": {
+			"viewName": "sap.fe.templates.RootContainer.view.Fcl",
+			"type": "XML",
+			"async": true,
+			"id": "appRootView"
+		},
+		"flexBundle": false
+	},
+	"sap.fiori": {
+		"registrationIds": [],
+		"archeType": "transactional"
+	},
+	"sap.fe": {
+		"app": {
+			"enableLazyLoading": true
+		}
+	},
+	"sap.cloud": {
+		"public": true,
+		"service": "itassetmngt.service"
+	}
+}

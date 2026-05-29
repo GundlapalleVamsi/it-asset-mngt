@@ -1,0 +1,230 @@
+_schema-version: 3.3.0
+ID: it-asset-mngt
+version: 1.0.0
+description: "A simple CAP project."
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+  - name: it-asset-mngt-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      instances: 1
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: it-asset-mngt-auth
+      - name: it-asset-mngt-db
+      - name: it-asset-mngt-destination
+
+  - name: it-asset-mngt-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: it-asset-mngt-db
+  - name: it-asset-mngt
+    type: approuter.nodejs
+    path: app/router
+    parameters:
+      keep-existing-routes: true
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api # must be used in xs-app.json as well
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: it-asset-mngt-auth
+      - name: it-asset-mngt-html5-runtime
+      - name: it-asset-mngt-destination
+    provides:
+      - name: app-api
+        properties:
+          app-protocol: ${protocol}
+          app-uri: ${default-uri}
+
+  - name: it-asset-mngt-app-deployer
+    type: com.sap.application.content
+    path: gen
+    build-parameters:
+      build-result: app/
+      requires:
+        - name: itassetmngtanalytical
+          artifacts:
+            - analytical.zip
+          target-path: app/
+        - name: itassetmngtemployee_portal
+          artifacts:
+            - employeeportal.zip
+          target-path: app/
+        - name: itassetmngtitagentdashboard
+          artifacts:
+            - itagentdashboard.zip
+          target-path: app/
+    requires:
+      - name: it-asset-mngt-auth
+      - name: srv-api
+      - name: it-asset-mngt-html5-repo-host
+        parameters:
+          content-target: true
+          config:
+            HTML5Runtime_enabled: true
+    parameters:
+      config:
+        destinations:
+          - Name: srv-api
+            URL: ~{srv-api/srv-url}
+            Authentication: NoAuthentication
+            Type: HTTP
+            ProxyType: Internet
+            HTML5.ForwardAuthToken: true
+            HTML5.DynamicDestination: true
+
+  - name: itassetmngtanalytical
+    type: html5
+    path: app/analytical
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
+  - name: itassetmngtemployee_portal
+    type: html5
+    path: app/employee_portal
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
+  - name: itassetmngtitagentdashboard
+    type: html5
+    path: app/it-agent-dashboard
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
+
+  - name: it-asset-mngt-destinations
+    type: com.sap.application.content
+    requires:
+      - name: it-asset-mngt-auth
+        parameters:
+          service-key:
+            name: it-asset-mngt-auth-key
+      - name: it-asset-mngt-html5-repo-host
+        parameters:
+          service-key:
+            name: it-asset-mngt-html5-repo-host-key
+      - name: srv-api
+      - name: it-asset-mngt-destination
+        parameters:
+          content-target: true
+    build-parameters:
+      no-source: true
+    parameters:
+      content:
+        instance:
+          existing_destinations_policy: update
+          destinations:
+            - Name: it-asset-mngt-html5-repository
+              ServiceInstanceName: it-asset-mngt-html5-repo-host
+              ServiceKeyName: it-asset-mngt-html5-repo-host-key
+              sap.cloud.service: itassetmngt.service
+            - Name: it-asset-mngt-auth
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: it-asset-mngt-auth
+              ServiceKeyName: it-asset-mngt-auth-key
+              sap.cloud.service: itassetmngt.service
+
+resources:
+  - name: it-asset-mngt-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: it-asset-mngt-${org}-${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - "binding-secret"
+            - "x509"
+          redirect-uris:
+            - https://*~{app-api/app-uri}/**
+        role-collections:
+          - name: 'Asset.Manage (it-asset-mngt ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.Asset.Manage'
+          - name: 'Admin.All (it-asset-mngt ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.Admin.All'
+          - name: 'Asset.Read (it-asset-mngt ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.Asset.Read'
+          - name: 'Ticket.Read (it-asset-mngt ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.Ticket.Read'
+          - name: 'Ticket.Write (it-asset-mngt ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.Ticket.Write'
+          - name: 'Ticket.Manage (it-asset-mngt ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.Ticket.Manage'
+    requires:
+      - name: app-api
+  - name: it-asset-mngt-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+  - name: it-asset-mngt-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+    requires:
+      - name: srv-api
+
+  - name: it-asset-mngt-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+  - name: it-asset-mngt-html5-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime

@@ -1,0 +1,5 @@
+ID,Priority,ResponseHours,ResolutionHours,EscalationHours,EscalationLevel,IsActive,Description,createdAt,createdBy,modifiedAt,modifiedBy
+550e8400-e29b-41d4-a716-446655470001,CRITICAL,1,4,2,L3,true,Critical incidents requiring immediate attention,2025-01-01T09:00:00Z,admin,2025-01-01T09:30:00Z,admin
+550e8400-e29b-41d4-a716-446655470002,HIGH,2,8,4,L2,true,High priority issues impacting business operations,2025-01-02T09:00:00Z,admin,2025-01-02T09:30:00Z,admin
+550e8400-e29b-41d4-a716-446655470003,MEDIUM,4,24,8,L2,true,Medium priority tickets with limited impact,2025-01-03T09:00:00Z,admin,2025-01-03T09:30:00Z,admin
+550e8400-e29b-41d4-a716-446655470004,LOW,8,48,24,L1,true,Low priority requests and informational issues,2025-01-04T09:00:00Z,admin,2025-01-04T09:30:00Z,admin

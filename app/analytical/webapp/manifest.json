@@ -1,0 +1,180 @@
+{
+  "_version": "1.84.0",
+  "sap.app": {
+    "id": "analytical",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:alp",
+      "version": "1.24.0",
+      "toolsId": "02da6775-89e1-4f6d-bd3d-4eb324178d3b"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/my-service2/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.01"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "it-agent-dashboard-display": {
+          "semanticObject": "it-agent-dashboard",
+          "action": "display",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.148.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "analytical.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "TicketAnalyticsList",
+          "target": "TicketAnalyticsList"
+        },
+        {
+          "pattern": "TicketAnalytics({key}):?query:",
+          "name": "TicketAnalyticsObjectPage",
+          "target": "TicketAnalyticsObjectPage"
+        }
+      ],
+      "targets": {
+        "TicketAnalyticsList": {
+          "type": "Component",
+          "id": "TicketAnalyticsList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/TicketAnalytics",
+              "variantManagement": "Page",
+              "navigation": {
+                "TicketAnalytics": {
+                  "detail": {
+                    "route": "TicketAnalyticsObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "AnalyticalTable",
+                    "selectionMode": "Auto"
+                  }
+                }
+              },
+              "views": {
+                "paths": [
+                  {
+                    "primary": [
+                      {
+                        "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant"
+                      }
+                    ],
+                    "secondary": [
+                      {
+                        "annotationPath": "com.sap.vocabularies.UI.v1.LineItem"
+                      }
+                    ],
+                    "defaultPath": "both"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "TicketAnalyticsObjectPage": {
+          "type": "Component",
+          "id": "TicketAnalyticsObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/TicketAnalytics"
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "analytical"
+  },
+  "sap.fe": {
+    "app": {
+      "enableLazyLoading": true
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "itassetmngt.service"
+  }
+}
