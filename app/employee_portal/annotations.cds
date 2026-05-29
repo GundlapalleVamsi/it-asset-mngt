@@ -378,6 +378,8 @@ annotate service.Assets with @(
             Label: 'Brand',
             Value: Brand
         },
+
+        
         {
             $Type: 'UI.DataField',
             Label: 'Model',
